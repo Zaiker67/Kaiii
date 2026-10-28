@@ -15,9 +15,9 @@ local displayName = player.DisplayName
 local virtualUser = game:GetService("VirtualUser")
 local lighting = game:GetService("Lighting")
 
-local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/imhenne187/libvariations/refs/heads/main/librarys/red.luau", true))()
+local library = loadstring(game:HttpGet("https://codeberg.org/PRUEBACUENTAZEUS/PaidLib/raw/branch/main/M14Library.lua", true))()
 
-local window = library:AddWindow("GenX | Farming - " .. displayName, {
+local window = library:AddWindow("AN94 | Farming - Balagbagan na " .. displayName, {
 	title_bar = { Color3.fromRGB(138, 138, 138), Color3.fromRGB(255, 255, 255) },
 	title_bar_transparency = 0.3,
 	background = { Color3.fromRGB(119, 119, 119), Color3.fromRGB(200, 200, 200) },
