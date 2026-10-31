@@ -226,232 +226,207 @@ end
 
 local rebirthTab = window:AddTab("Fast Rebirth")
 
-local function formatNumber(num)
-    if num >= 1e15 then return string.format("%.2fQa", num/1e15) end
-    if num >= 1e12 then return string.format("%.2fT", num/1e12) end
-    if num >= 1e9 then return string.format("%.2fB", num/1e9) end
-    if num >= 1e6 then return string.format("%.2fM", num/1e6) end
-    if num >= 1e3 then return string.format("%.2fK", num/1e3) end
-    return string.format("%.0f", num)
+-- Rebirth Tab
+
+rebirthTab.leaderstats = lp.player:WaitForChild("leaderstats")
+rebirthTab.rebirths = rebirthTab.leaderstats:WaitForChild("Rebirths")
+rebirthTab.strength = rebirthTab.leaderstats:WaitForChild("Strength")
+rebirthTab.running = false
+rebirthTab.workerActive = false
+rebirthTab.startedAt = 0
+rebirthTab.timerStarted = false
+rebirthTab.hasStarted = false
+rebirthTab.totalElapsed = 0
+rebirthTab.startRebirths = rebirthTab.rebirths.Value
+rebirthTab.gainedBaselineSet = false
+rebirthTab.lastRebirthAt = tick()
+rebirthTab.lastRebirthValue = rebirthTab.rebirths.Value
+rebirthTab.paceBaselineReady = false
+rebirthTab.petFolders = {}
+rebirthTab.pets = {}
+rebirthTab.uniquePets = {}
+rebirthTab.omegas = {}
+rebirthTab.swifts = {}
+rebirthTab.hounds = {}
+rebirthTab.hydras = {}
+rebirthTab.tribals = {}
+rebirthTab.folderIndex = 1
+rebirthTab.petIndex = 1
+rebirthTab.repIndex = 1
+rebirthTab.equippedCount = 0
+rebirthTab.currentPercent = 0
+rebirthTab.maxSlots = 12
+rebirthTab.strengthTarget = 0
+rebirthTab.repsPerBurst = 12
+rebirthTab.rebirthValueBefore = rebirthTab.rebirths.Value
+rebirthTab.Status = rebirthTab:AddLabel("Status: Inactive")
+rebirthTab.Runtime = rebirthTab:AddLabel("Runtime: 0d 0h 0m 0s")
+rebirthTab.RebirthStats = rebirthTab:AddLabel("Rebirths: " .. formatCurrentStat(rebirthTab.rebirths.Value) .. " | Gained: 0")
+rebirthTab.Pace = rebirthTab:AddLabel("Pace: -- / Hour | -- / Day | -- / Week")
+rebirthTab.AveragePace = rebirthTab:AddLabel("Average: -- / Hour | -- / Day | -- / Week")
+rebirthTab.Status.TextColor3 = Color3.fromRGB(255, 80, 80)
+
+rebirthTab.updateStats = function()
+    rebirthTab.RebirthStats.Text = "Rebirths: " .. formatCurrentStat(rebirthTab.rebirths.Value)
+        .. " | Gained: " .. formatNumber(rebirthTab.rebirths.Value - rebirthTab.startRebirths)
 end
 
-local isRunning = false
-local startTime = 0
-local totalElapsed = 0
-local initialRebirths = rebirthsStat.Value
-local lastPaceUpdate = 0
-
-local serverLabel = rebirthTab:AddLabel("ð Stats:")
-serverLabel.TextSize = 17
-local timeLabel = rebirthTab:AddLabel("0d 0h 0m 0s - Inactive")
-local paceLabel = rebirthTab:AddLabel("Rebirth Pace: /Hour | /Day | /Week")
-local averagePaceLabel = rebirthTab:AddLabel("Average Rebirth Pace: /Hour | /Day | /Week")
-
-paceLabel.TextSize = 15
-averagePaceLabel.TextSize = 15
-
-timeLabel.TextSize = 15
-timeLabel.TextColor3 = Color3.fromRGB(255, 50, 50)
-
-local rebirthsStatsLabel = rebirthTab:AddLabel("Rebirths: "..formatNumber(rebirthsStat.Value).." | Gained: 0")
-rebirthsStatsLabel.TextSize = 15
-
-local lastRebirthTime = tick()
-local lastRebirthValue = rebirthsStat.Value
-
-local function updateRebirthsLabel()
-    local gained = rebirthsStat.Value - initialRebirths
-    rebirthsStatsLabel.Text = string.format("Rebirths: %s | Gained: %s", 
-                                           formatNumber(rebirthsStat.Value),
-                                           formatNumber(gained))
-end
-
-local function updateUI(forceUpdate)
-    local currentTime = tick()
-    local elapsed = isRunning and (currentTime - startTime + totalElapsed) or totalElapsed
-    
-    local days = math.floor(elapsed / 86400)
-    local hours = math.floor((elapsed % 86400) / 3600)
-    local minutes = math.floor((elapsed % 3600) / 60)
-    local seconds = math.floor(elapsed % 60)
-    
-    local statusText = isRunning and "Rebirthing" or (elapsed > 0 and "Rebirthing Paused" or "Fast Reb Inactive")
-    timeLabel.Text = string.format("%dd %dh %dm %ds - %s", days, hours, minutes, seconds, statusText)
-    
-    if isRunning then
-        timeLabel.TextColor3 = Color3.fromRGB(50, 255, 50)
-    elseif elapsed > 0 then
-        timeLabel.TextColor3 = Color3.fromRGB(255, 165, 0)
-    else
-        timeLabel.TextColor3 = Color3.fromRGB(255, 50, 50)
+rebirthTab.updateRuntime = function()
+    rebirthTab.elapsed = rebirthTab.totalElapsed
+    if rebirthTab.running and rebirthTab.timerStarted then
+        rebirthTab.elapsed = rebirthTab.elapsed + tick() - rebirthTab.startedAt
     end
+
+    rebirthTab.Runtime.Text = string.format(
+        "Runtime: %dd %dh %dm %ds",
+        math.floor(rebirthTab.elapsed / 86400),
+        math.floor((rebirthTab.elapsed % 86400) / 3600),
+        math.floor((rebirthTab.elapsed % 3600) / 60),
+        math.floor(rebirthTab.elapsed % 60)
+    )
 end
 
-local paceHistoryHour = {}
-local paceHistoryDay = {}
-local paceHistoryWeek = {}
-
-local maxHistoryLength = 20
-
-local rebirthCount = 0
-local savedPaceHour = 0
-local savedPaceDay = 0
-local savedPaceWeek = 0
-local savedAvgHour = 0
-local savedAvgDay = 0
-local savedAvgWeek = 0
-
-local function calculatePaceOnRebirth()
-    rebirthCount = rebirthCount + 1
-    if rebirthCount < 2 then
-        lastRebirthTime = tick()
-        lastRebirthValue = rebirthsStat.Value
+rebirthTab.updatePace = function()
+    if not rebirthTab.running then
         return
     end
 
-    if not isRunning then
+    if not rebirthTab.paceBaselineReady then
+        rebirthTab.paceBaselineReady = true
+        rebirthTab.timerStarted = true
+        rebirthTab.startedAt = tick()
+        rebirthTab.lastRebirthAt = tick()
+        rebirthTab.lastRebirthValue = rebirthTab.rebirths.Value
+        rebirthTab.averageStartedAt = tick()
+        rebirthTab.averageStartRebirths = rebirthTab.rebirths.Value
         return
     end
 
-    local now = tick()
-    local gained = rebirthsStat.Value - lastRebirthValue
-
-    if gained > 0 then
-        local avgTimePerRebirth = (now - lastRebirthTime) / gained
-        local paceHour = 3600 / avgTimePerRebirth
-        local paceDay = 86400 / avgTimePerRebirth
-        local paceWeek = 604800 / avgTimePerRebirth
-
-        savedPaceHour = paceHour
-        savedPaceDay = paceDay
-        savedPaceWeek = paceWeek
-
-        paceLabel.Text = string.format("Pace: %s / Hour | %s / Day | %s / Week",
-            formatNumber(paceHour), formatNumber(paceDay), formatNumber(paceWeek))
-
-        table.insert(paceHistoryHour, paceHour)
-        table.insert(paceHistoryDay, paceDay)
-        table.insert(paceHistoryWeek, paceWeek)
-
-        if #paceHistoryHour > maxHistoryLength then
-            table.remove(paceHistoryHour, 1)
-            table.remove(paceHistoryDay, 1)
-            table.remove(paceHistoryWeek, 1)
-        end
-
-        local function average(tbl)
-            local sum = 0
-            for _, v in ipairs(tbl) do
-                sum = sum + v
-            end
-            return #tbl > 0 and (sum / #tbl) or 0
-        end
-
-        local avgHour = average(paceHistoryHour)
-        local avgDay = average(paceHistoryDay)
-        local avgWeek = average(paceHistoryWeek)
-
-        savedAvgHour = avgHour
-        savedAvgDay = avgDay
-        savedAvgWeek = avgWeek
-
-        averagePaceLabel.Text = string.format("Average Pace: %s / Hour | %s / Day | %s / Week",
-            formatNumber(avgHour), formatNumber(avgDay), formatNumber(avgWeek))
-
-        lastRebirthTime = now
-        lastRebirthValue = rebirthsStat.Value
+    if rebirthTab.rebirths.Value <= rebirthTab.lastRebirthValue then
+        return
     end
+
+    rebirthTab.rebirthGain = rebirthTab.rebirths.Value - rebirthTab.lastRebirthValue
+    rebirthTab.secondsPerRebirth = (tick() - rebirthTab.lastRebirthAt) / rebirthTab.rebirthGain
+    rebirthTab.hourlyPace = 3600 / rebirthTab.secondsPerRebirth
+    rebirthTab.dailyPace = 86400 / rebirthTab.secondsPerRebirth
+    rebirthTab.weeklyPace = 604800 / rebirthTab.secondsPerRebirth
+
+    rebirthTab.Pace.Text = string.format(
+        "Pace: %s / Hour | %s / Day | %s / Week",
+        formatNumber(rebirthTab.hourlyPace),
+        formatNumber(rebirthTab.dailyPace),
+        formatNumber(rebirthTab.weeklyPace)
+    )
+
+    rebirthTab.averageElapsed = tick() - rebirthTab.averageStartedAt
+    rebirthTab.averageHourlyPace = (rebirthTab.rebirths.Value - rebirthTab.averageStartRebirths)
+        / rebirthTab.averageElapsed * 3600
+
+    rebirthTab.AveragePace.Text = string.format(
+        "Average: %s / Hour | %s / Day | %s / Week",
+        formatNumber(rebirthTab.averageHourlyPace),
+        formatNumber(rebirthTab.averageHourlyPace * 24),
+        formatNumber(rebirthTab.averageHourlyPace * 168)
+    )
+
+    rebirthTab.lastRebirthAt = tick()
+    rebirthTab.lastRebirthValue = rebirthTab.rebirths.Value
 end
 
-rebirthsStat:GetPropertyChangedSignal("Value"):Connect(function()
-    calculatePaceOnRebirth()
-    updateRebirthsLabel()
-end)
 
-function unequipPets()
-    for _, folder in pairs(lp.player.petsFolder:GetChildren()) do
-        if folder:IsA("Folder") then
-            for _, pet in pairs(folder:GetChildren()) do
-                services.replicatedstorage.rEvents.equipPetEvent:FireServer("unequipPet", pet)
-            end
-        end
-    end
-    task.wait(0.1)
+rebirthTab.unequipAllPets = function()
+    unequipConfiguredPets()
 end
 
-function equipPetsByName(name)
-    unequipPets()
-    task.wait(0.1) -- Slightly increased to ensure server registers the unequip request
-    
-    -- Iterate through ALL rarity folders (Basic, Advanced, Rare, Unique, Epic, etc.)
-    for _, folder in pairs(lp.player.petsFolder:GetChildren()) do
-        if folder:IsA("Folder") then
-            for _, pet in pairs(folder:GetChildren()) do
-                if pet.Name == name then
-                    services.replicatedstorage.rEvents.equipPetEvent:FireServer("equipPet", pet)
-                end
-            end
-        end
-    end
+rebirthTab.equipFarmingPets = function()
+    equipBestFarmingPets()
 end
 
-local function doRebirth()
-    local rebirths = rebirthsStat.Value
-    local strengthTarget = 5000 + (rebirths * 2550)
-    
-    while isRunning and player.leaderstats.Strength.Value < strengthTarget do
-        local reps = player.MembershipType == Enum.MembershipType.Premium and 12 or 20
-        for _ = 1, reps do
-            muscleEvent:FireServer("rep")
+rebirthTab.equipRebirthPets = function()
+    equipBestRebirthPets()
+end
+
+rebirthTab.performRebirth = function()
+    rebirthTab.strengthTarget = 5000 + rebirthTab.rebirths.Value * 2550
+    rebirthTab.repsPerBurst = lp.player.MembershipType == Enum.MembershipType.Premium and 6 or 12
+
+    rebirthTab.repIndex = 1
+    while rebirthTab.running and rebirthTab.strength.Value < rebirthTab.strengthTarget do
+        rebirthTab.repIndex = 1
+        while rebirthTab.repIndex <= rebirthTab.repsPerBurst do
+            services.muscleEvent:FireServer("rep")
+            rebirthTab.repIndex = rebirthTab.repIndex + 1
         end
         task.wait(0.02)
     end
-    
-    if isRunning and player.leaderstats.Strength.Value >= strengthTarget then
-        managePets("Tribal Overlord")
+
+    if rebirthTab.running and rebirthTab.strength.Value >= rebirthTab.strengthTarget then
+        rebirthTab.equipRebirthPets()
         task.wait(0.25)
-        
-        local before = rebirthsStat.Value
+        rebirthTab.rebirthValueBefore = rebirthTab.rebirths.Value
+
         repeat
-            replicatedStorage.rEvents.rebirthRemote:InvokeServer("rebirthRequest")
+            services.replicatedstorage.rEvents.rebirthRemote:InvokeServer("rebirthRequest")
             task.wait(0.05)
-        until rebirthsStat.Value > before or not isRunning
+        until rebirthTab.rebirths.Value > rebirthTab.rebirthValueBefore or not rebirthTab.running
     end
 end
 
-local function fastRebirthLoop()
-    while isRunning do
-        managePets("Swift Samurai")
-        doRebirth()
-        task.wait(0.5)
+rebirthTab.startWorker = function()
+    if rebirthTab.workerActive then
+        return
     end
-end
 
-rebirthTab:AddLabel("")
-rebirthTab:AddLabel("Rebirthing:").TextSize = 17
-
-rebirthTab:AddSwitch("Fast Rebirth", function(state)
-    isRunning = state
-    
-    if state then
-        startTime = tick()
-        if savedPaceHour > 0 then
-            paceLabel.Text = string.format("Pace: %s / Hour | %s / Day | %s / Week",
-                formatNumber(savedPaceHour), formatNumber(savedPaceDay), formatNumber(savedPaceWeek))
-            averagePaceLabel.Text = string.format("Average Pace: %s / Hour | %s / Day | %s / Week",
-                formatNumber(savedAvgHour), formatNumber(savedAvgDay), formatNumber(savedAvgWeek))
+    rebirthTab.workerActive = true
+    task.spawn(function()
+        while rebirthTab.running do
+            rebirthTab.equipFarmingPets()
+            rebirthTab.performRebirth()
+            task.wait(0.5)
         end
-        task.spawn(fastRebirthLoop)
-    else
-        totalElapsed = totalElapsed + (tick() - startTime)
-        updateUI(true)
-    end
+        rebirthTab.workerActive = false
+    end)
+end
+
+rebirthTab.rebirths:GetPropertyChangedSignal("Value"):Connect(function()
+    rebirthTab.updatePace()
+    rebirthTab.updateStats()
 end)
+
+rebirthTab:AddSwitch("Fast Rebirth (Packs & Rep Pets Supported)", function(state)
+    rebirthTab.running = state
+    if state then
+        rebirthTab.hasStarted = true
+        rebirthTab.startedAt = 0
+        rebirthTab.timerStarted = false
+        if not rebirthTab.gainedBaselineSet then
+            rebirthTab.startRebirths = rebirthTab.rebirths.Value
+            rebirthTab.gainedBaselineSet = true
+        end
+        rebirthTab.lastRebirthAt = tick()
+        rebirthTab.lastRebirthValue = rebirthTab.rebirths.Value
+        rebirthTab.paceBaselineReady = false
+        rebirthTab.Status.Text = "Status: Rebirthing"
+        rebirthTab.Status.TextColor3 = Color3.fromRGB(80, 255, 120)
+        rebirthTab.updateStats()
+        rebirthTab.startWorker()
+    else
+        if rebirthTab.timerStarted and rebirthTab.startedAt > 0 then
+            rebirthTab.totalElapsed = rebirthTab.totalElapsed + tick() - rebirthTab.startedAt
+            rebirthTab.startedAt = 0
+            rebirthTab.timerStarted = false
+        end
+        rebirthTab.Status.Text = rebirthTab.hasStarted and "Status: Paused" or "Status: Inactive"
+        rebirthTab.Status.TextColor3 = rebirthTab.hasStarted and Color3.fromRGB(255, 180, 70) or Color3.fromRGB(255, 80, 80)
+        rebirthTab.updateRuntime()
+    end
+end):Set(false)
 
 task.spawn(function()
     while true do
-        updateUI(false)
-        task.wait(0.1)
+        rebirthTab.updateRuntime()
+        task.wait(1)
     end
 end)
 
