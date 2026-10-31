@@ -17,7 +17,7 @@ local lighting = game:GetService("Lighting")
 
 local library = loadstring(game:HttpGet("https://codeberg.org/PRUEBACUENTAZEUS/PaidLib/raw/branch/main/M14Library.lua", true))()
 
-local window = library:AddWindow("AN94 | Farming - Balagbagan na " .. displayName, {
+local window = library:AddWindow("M1887 | Private Version - Boss Farming", {
 	title_bar = { Color3.fromRGB(138, 138, 138), Color3.fromRGB(255, 255, 255) },
 	title_bar_transparency = 0.3,
 	background = { Color3.fromRGB(119, 119, 119), Color3.fromRGB(200, 200, 200) },
@@ -881,16 +881,16 @@ statPetDropdown:Add("Rainbow Boss Pet")
 local char = player.Character or player.CharacterAdded:wait()
 local hrp = char:WaitForChild("HumanoidRootPart")
 
-settingsTab:AddButton("Jungle Lift",function()
-    hrp.CFrame = CFrame.new(-8642.396484375, 6.7980651855, 2086.1030273)
+settingsTab:AddButton("Hallowed Lift",function()
+    hrp.CFrame = CFrame.new(5432.12, 85.35, 5715.02)
     task.wait(0.2)
     VirtualInputManager:SendKeyEvent(true, Enum.KeyCode.E, false, game)
     task.wait(0.05)
     VirtualInputManager:SendKeyEvent(false, Enum.KeyCode.E, false, game)
 end)
 
-settingsTab:AddButton("Jungle Squat",function()
-    hrp.CFrame = CFrame.new(-8371.43359375, 6.79806327, 2858.88525390)
+settingsTab:AddButton("Hallowed Squat",function()
+    hrp.CFrame = CFrame.new(4812.03, 85.35, 5839.05)
     task.wait(0.2)
     VirtualInputManager:SendKeyEvent(true, Enum.KeyCode.E, false, game)
     task.wait(0.05)
@@ -899,16 +899,16 @@ end)
 
 local infoTab = window:AddTab("Info")
 infoTab:Show()
-infoTab:AddLabel("Made by Henne").TextSize = 17
-infoTab:AddLabel("Contact: Henne @imhenne").TextSize = 17
-infoTab:AddLabel("Main Owner: ValtroxqDev") .TextSize = 17
-infoTab:AddButton("Copy Discord Invite", function()
-    local link = "https://discord.gg/7erXUzr8xK"
+infoTab:AddLabel("Made by BossKenzou").TextSize = 17
+infoTab:AddLabel("TikTok: Kenzouu Warfreakkk!").TextSize = 17
+infoTab:AddLabel("If you encounter a problem or suggestions, PM/DM on TikTok") .TextSize = 17
+infoTab:AddButton("Copy TikTok Link", function()
+    local link = "https://tiktok.com/@officialkenzouu"
     if setclipboard then
         setclipboard(link)
         game.StarterGui:SetCore("SendNotification", {
             Title = "Link Copied!";
-            Text = "You can continue to Discord now.";
+            Text = "Pa follow na din ako, tutal na copy link mo na";
             Duration = 3;
         })
     else
@@ -920,6 +920,6 @@ infoTab:AddButton("Copy Discord Invite", function()
     end
 end)
 infoTab:AddLabel("")
-local wLabel = infoTab:AddLabel("GenX Script [V2.0.0]")
+local wLabel = infoTab:AddLabel("M1887 Script")
 wLabel.TextSize = 30
 wLabel.Font = Enum.Font.Arcade
