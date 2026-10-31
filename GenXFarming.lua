@@ -1,8 +1,3 @@
--- This file was deobfuscated by Let's Skid (https://discord.gg/4ZrFcrRMjq)
-
--- GenX | Farming - Muscle Legends
--- Credits: Henne
-
 local players = game:GetService("Players")
 local player = players.LocalPlayer
 
@@ -511,23 +506,197 @@ farmTab:AddLabel("Try Around!")
 
 local settingsTab = window:AddTab("Misc")
 
-settingsTab:AddLabel("ð Better Farming:").TextSize = 17
+settingsTab:AddLabel("Misc 1:").TextSize = 17
 
 local running = false
 local thread = nil
 
-local sizeSwitch = settingsTab:AddSwitch("Set Size 1", function(bool)
+local sizeSwitch = settingsTab:AddSwitch("Set Size 2", function(bool)
     running = bool
     if running then
         thread = coroutine.create(function()
             while running do
-                game:GetService("ReplicatedStorage").rEvents.changeSpeedSizeRemote:InvokeServer("changeSize", 1)
+                game:GetService("ReplicatedStorage").rEvents.changeSpeedSizeRemote:InvokeServer("changeSize", 2)
                 wait(0.01)
             end
         end)
         coroutine.resume(thread)
     end
 end)
+
+local Players = game:GetService("Players")
+local VirtualUser = game:GetService("VirtualUser")
+local TeleportService = game:GetService("TeleportService")
+local CoreGui = game:GetService("CoreGui")
+local GuiService = game:GetService("GuiService")
+local StarterGui = game:GetService("StarterGui")
+
+local localPlayer = Players.LocalPlayer
+
+local afkGui = nil
+local afkConnection = nil
+local disconnectConnection = nil
+local promptConnection = nil
+
+-- Ilagay ang AddSwitch sa itaas
+settingsTab:AddSwitch("Anti-AFK", function(state)
+    if state then
+        -- Clean up any existing instances just in case
+        if afkGui then afkGui:Destroy() end
+        if afkConnection then afkConnection:Disconnect() end
+        if disconnectConnection then disconnectConnection:Disconnect() end
+        if promptConnection then promptConnection:Disconnect() end
+
+        afkGui = Instance.new("ScreenGui")
+        afkGui.Name = "AntiAFKGui"
+        afkGui.ResetOnSpawn = false
+        afkGui.Parent = localPlayer:WaitForChild("PlayerGui")
+
+        local titleLabel = Instance.new("TextLabel", afkGui)
+        titleLabel.Size = UDim2.new(0, 200, 0, 50)
+        titleLabel.Position = UDim2.new(0.5, -100, 0, -50)
+        titleLabel.Text = "ANTI AFK"
+        titleLabel.TextColor3 = Color3.fromRGB(50, 255, 50)
+        titleLabel.Font = Enum.Font.GothamBold
+        titleLabel.TextSize = 20
+        titleLabel.BackgroundTransparency = 1
+        titleLabel.TextTransparency = 1
+
+        local timerLabel = Instance.new("TextLabel", afkGui)
+        timerLabel.Size = UDim2.new(0, 200, 0, 30)
+        timerLabel.Position = UDim2.new(0.5, -100, 0, -20)
+        timerLabel.Text = "00:00:00"
+        timerLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+        timerLabel.Font = Enum.Font.GothamBold
+        timerLabel.TextSize = 18
+        timerLabel.BackgroundTransparency = 1
+        timerLabel.TextTransparency = 1
+
+        local startTime = tick()
+
+        -- Timer update task
+        task.spawn(function()
+            while afkGui and afkGui.Parent do
+                local elapsed = tick() - startTime
+                local hours = math.floor(elapsed / 3600)
+                local minutes = math.floor((elapsed % 3600) / 60)
+                local seconds = math.floor(elapsed % 60)
+                timerLabel.Text = string.format("%02d:%02d:%02d", hours, minutes, seconds)
+                task.wait(1)
+            end
+        end)
+
+        -- Fade animation task with safety checks after yields
+        task.spawn(function()
+            while afkGui and afkGui.Parent do
+                for n = 0, 1, 0.02 do
+                    if not afkGui or not afkGui.Parent then break end
+                    titleLabel.TextTransparency = 1 - n
+                    timerLabel.TextTransparency = 1 - n
+                    task.wait(0.015)
+                end
+
+                task.wait(1.5)
+
+                for i = 0, 1, 0.02 do
+                    if not afkGui or not afkGui.Parent then break end
+                    titleLabel.TextTransparency = i
+                    timerLabel.TextTransparency = i
+                    task.wait(0.015)
+                end
+
+                task.wait(1)
+            end
+        end)
+
+        -- Anti-AFK event connection
+        afkConnection = localPlayer.Idled:Connect(function()
+            VirtualUser:Button2Down(Vector2.new(0, 0), workspace.CurrentCamera.CFrame)
+            task.wait(1)
+            VirtualUser:Button2Up(Vector2.new(0, 0), workspace.CurrentCamera.CFrame)
+        end)
+
+        -- Anti-Disconnect & Anti-Server Shutdown (Auto Reconnect)
+        disconnectConnection = CoreGui:WaitForChild("RobloxPromptGui", 5)
+        if disconnectConnection then
+            local promptOverlay = CoreGui.RobloxPromptGui:FindFirstChild("promptOverlay")
+            if promptOverlay then
+                disconnectConnection = promptOverlay.ChildAdded:Connect(function(child)
+                    if child.Name == "ErrorPrompt" then
+                        local message = child:FindFirstChild("MessageArea", true)
+                        if message and message:FindFirstChild("ErrorFrame") then
+                            task.wait(2)
+                            TeleportService:Teleport(game.PlaceId, localPlayer)
+                        end
+                    end
+                end)
+            end
+        end
+
+        -- Anti-Kick (Auto-dismiss error prompts kung sakaling lumabas)
+        promptConnection = GuiService.ErrorMessageChanged:Connect(function()
+            local promptOverlay = CoreGui:FindFirstChild("RobloxPromptGui")
+            if promptOverlay then
+                local errorPrompt = promptOverlay:FindFirstChild("ErrorPrompt", true)
+                if errorPrompt then
+                    TeleportService:Teleport(game.PlaceId, localPlayer)
+                end
+            end
+        end)
+
+        -- Send Notification gamit ang pcall para maiwasan ang crash kung sakaling di pa loaded ang CoreGui
+        task.spawn(function()
+            pcall(function()
+                StarterGui:SetCore("SendNotification", {
+                    Title = "M1887 | Anti-AFK";
+                    Text = "Anti-AFK successfully loaded";
+                    Icon = "https://www.roblox.com/Thumbs/Asset.ashx?width=420&height=420&assetId=79693252930451"; -- Pinalitan ko ang format ng asset ID para mas sigurado
+                    Duration = 5;
+                })
+            end)
+        end)
+
+    else
+        -- Kapag pinatay o in-off ang switch
+        if afkGui then 
+            afkGui:Destroy() 
+            afkGui = nil 
+        end
+        if afkConnection then 
+            afkConnection:Disconnect() 
+            afkConnection = nil 
+        end
+        if disconnectConnection then
+            if typeof(disconnectConnection) == "RBXScriptConnection" then
+                disconnectConnection:Disconnect()
+            end
+            disconnectConnection = nil
+        end
+        if promptConnection then 
+            promptConnection:Disconnect() 
+            promptConnection = nil 
+        end
+    end
+end):Set(true)
+
+settingsTab:AddSwitch("Anti Knockback", function(Value)
+    if Value then
+        local playerName = game.Players.LocalPlayer.Name
+        local rootPart = game.Workspace:FindFirstChild(playerName):FindFirstChild("HumanoidRootPart")
+        local bodyVelocity = Instance.new("BodyVelocity")
+        bodyVelocity.MaxForce = Vector3.new(100000, 0, 100000)
+        bodyVelocity.Velocity = Vector3.new(0, 0, 0)
+        bodyVelocity.P = 1250
+        bodyVelocity.Parent = rootPart
+    else
+        local playerName = game.Players.LocalPlayer.Name
+        local rootPart = game.Workspace:FindFirstChild(playerName):FindFirstChild("HumanoidRootPart")
+        local existingVelocity = rootPart:FindFirstChild("BodyVelocity")
+        if existingVelocity and existingVelocity.MaxForce == Vector3.new(100000, 0, 100000) then
+            existingVelocity:Destroy()
+        end
+    end
+end):Set(true)
 
 local posLocked = false
 local lockedPosition = nil
@@ -647,6 +816,11 @@ local frameSwitch = settingsTab:AddSwitch("Hide Stat Frames", function(bool)
 	end
 end)
 frameSwitch:Set(false)
+
+settingsTab:AddButton("Equip Best Pets", function()
+    equipBestFarmingPets()
+end)
+
 
 settingsTab:AddButton("Anti Lag", function()
     local player = game.Players.LocalPlayer
