@@ -1282,61 +1282,6 @@ local autoShakeSwitch = settingsTab:AddSwitch("Auto Shake", function(state)
     end
 end)
 
-settingsTab.boostItemList = {
-    "Tropical Shake",
-    "Energy Shake",
-    "Protein Bar",
-    "TOUGH Bar",
-    "Protein Shake",
-    "ULTRA Shake",
-    "Energy Bar",
-}
-
-settingsTab.boostActions = {
-    ["Tropical Shake"] = "tropicalShake",
-    ["Energy Shake"] = "energyShake",
-    ["Protein Bar"] = "proteinBar",
-    ["TOUGH Bar"] = "toughBar",
-    ["Protein Shake"] = "proteinShake",
-    ["ULTRA Shake"] = "ultraShake",
-    ["Energy Bar"] = "energyBar",
-}
-
-settingsTab.eatAllBoostsRunning = false
-
-task.spawn(function()
-    while true do
-        if settingsTab.eatAllBoostsRunning then
-            settingsTab.boostItemIndex = 1
-            while settingsTab.boostItemIndex <= #settingsTab.boostItemList do
-                settingsTab.boostItemName = settingsTab.boostItemList[settingsTab.boostItemIndex]
-                settingsTab.character = lp.player.Character
-                settingsTab.backpack = lp.player:FindFirstChild("Backpack")
-                settingsTab.boostTool = (settingsTab.character and settingsTab.character:FindFirstChild(settingsTab.boostItemName))
-                    or (settingsTab.backpack and settingsTab.backpack:FindFirstChild(settingsTab.boostItemName))
-
-                if settingsTab.boostTool then
-                    settingsTab.boostUseIndex = 1
-                    while settingsTab.boostUseIndex <= 10 do
-                        services.muscleEvent:FireServer(settingsTab.boostActions[settingsTab.boostItemName], settingsTab.boostTool)
-                        settingsTab.boostUseIndex = settingsTab.boostUseIndex + 1
-                    end
-                end
-
-                settingsTab.boostItemIndex = settingsTab.boostItemIndex + 1
-            end
-
-            task.wait(0.1)
-        else
-            task.wait(1)
-        end
-    end
-end)
-
-settingsTab:AddSwitch("Eat All Boost (Except Egg)", function(state)
-    settingsTab.eatAllBoostsRunning = state
-end)
-
 settingsTab.spinFortuneWheel = function()
     settingsTab.spinResult = table.pack(pcall(function()
         return game:GetService("ReplicatedStorage").rEvents.openFortuneWheelRemote:InvokeServer(
