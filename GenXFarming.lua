@@ -1254,19 +1254,19 @@ task.spawn(function()
 end)
 
 function eatEgg()
-    tabs.other.character = lp.player.Character
-    tabs.other.backpack = lp.player:FindFirstChild("Backpack")
-    tabs.other.tool = (tabs.other.character and tabs.other.character:FindFirstChild("Protein Egg")) or (tabs.other.backpack and tabs.other.backpack:FindFirstChild("Protein Egg"))
-    if tabs.other.tool then
+    settingsTab.character = lp.player.Character
+    settingsTab.backpack = lp.player:FindFirstChild("Backpack")
+    settingsTab.tool = (settingsTab.character and settingsTab.character:FindFirstChild("Protein Egg")) or (settingsTab.backpack and settingsTab.backpack:FindFirstChild("Protein Egg"))
+    if settingsTab.tool then
         for _ = 1, 10 do
-            services.muscleEvent:FireServer("proteinEgg", tabs.other.tool)
+            services.muscleEvent:FireServer("proteinEgg", settingsTab.tool)
         end
     end
 end
 
 task.spawn(function()
     while true do
-        if tabs.other.autoEgg then
+        if settingsTab.autoEgg then
             eatEgg()
             task.wait(0.5)
         else
@@ -1276,7 +1276,7 @@ task.spawn(function()
 end)
 
 local autoEggSwitch = settingsTab:AddSwitch("Auto Egg", function(state)
-    tabs.other.autoEgg = state
+    settingsTab.autoEgg = state
     if state then
         eatEgg()
     end
@@ -1408,6 +1408,6 @@ infoTab:AddButton("Copy TikTok Link", function()
     end
 end)
 infoTab:AddLabel("")
-local wLabel = infoTab:AddLabel("M1887 Script")
+local wLabel = infoTab:AddLabel("M1887 Private")
 wLabel.TextSize = 30
-wLabel.Font = Enum.Font.LuckiestGuy
+wLabel.Font = Enum.Font.Arcade
