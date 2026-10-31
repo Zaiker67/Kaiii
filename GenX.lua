@@ -1275,12 +1275,12 @@ task.spawn(function()
     end
 end)
 
-local autoEggSwitch = settingsTab:AddSwitch("Auto Egg", function(state)
+local autoEggSwitch = settingsTab:AddSwitch("Eat Eggs", function(state)
     settingsTab.autoEgg = state
     if state then
         eatEgg()
     end
-end)
+end):Set(false)
 
 settingsTab.boostItemList = {
     "Tropical Shake",
@@ -1333,7 +1333,7 @@ task.spawn(function()
     end
 end)
 
-local autoShakeSwitch = settingsTab:AddSwitch("Eat Everything (Except Egg)", function(state)
+settingsTab:AddSwitch("Eat All Boost (Except Egg)", function(state)
     settingsTab.eatAllBoostsRunning = state
 end)
 
