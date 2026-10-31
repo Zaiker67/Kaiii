@@ -1253,28 +1253,22 @@ task.spawn(function()
     end
 end)
 
-local function useEggs()
-    local boost = game.Players.LocalPlayer.boostTimersFolder:FindFirstChild("Protein Egg")
-    if boost and boost:IsA("IntValue") then
-        local seconds = boost.Value
-        if seconds >= 5 then
-            return
+function eatEgg()
+    tabs.other.character = lp.player.Character
+    tabs.other.backpack = lp.player:FindFirstChild("Backpack")
+    tabs.other.tool = (tabs.other.character and tabs.other.character:FindFirstChild("Protein Egg")) or (tabs.other.backpack and tabs.other.backpack:FindFirstChild("Protein Egg"))
+    if tabs.other.tool then
+        for _ = 1, 10 do
+            services.muscleEvent:FireServer("proteinEgg", tabs.other.tool)
         end
-    end
-    
-    local tool = player.Character:FindFirstChild("Protein Egg") or player.Backpack:FindFirstChild("Protein Egg")
-    if tool then
-        muscleEvent:FireServer("proteinEgg", tool)
     end
 end
 
-local running1 = false
-
 task.spawn(function()
     while true do
-        if running1 then
-            useEggs()
-            task.wait(1800)
+        if tabs.other.autoEgg then
+            eatEgg()
+            task.wait(0.5)
         else
             task.wait(1)
         end
@@ -1282,9 +1276,9 @@ task.spawn(function()
 end)
 
 local autoEggSwitch = settingsTab:AddSwitch("Auto Egg", function(state)
-    running1 = state
+    tabs.other.autoEgg = state
     if state then
-        useEggs()
+        eatEgg()
     end
 end)
 
@@ -1315,13 +1309,26 @@ local autoShakeSwitch = settingsTab:AddSwitch("Auto Shake", function(state)
     end
 end)
 
+settingsTab.spinFortuneWheel = function()
+    settingsTab.spinResult = table.pack(pcall(function()
+        return game:GetService("ReplicatedStorage").rEvents.openFortuneWheelRemote:InvokeServer(
+            "openFortuneWheel",
+            "Fortune Wheel"
+        )
+    end))
+end
+
 local spinwheelSwitch = settingsTab:AddSwitch("Spin Fortune Wheel", function(bool)
     _G.AutoSpinWheel = bool
     
     if bool then
-        spawn(function()
-            while _G.AutoSpinWheel and wait(1) do
-                game:GetService("ReplicatedStorage").rEvents.openFortuneWheelRemote:InvokeServer("openFortuneWheel", game:GetService("ReplicatedStorage").fortuneWheelChances["Fortune Wheel"])
+        task.spawn(function()
+            settingsTab.rspin = game:GetService("ReplicatedStorage").rEvents.openFortuneWheelRemote
+            settingsTab.chances = game:GetService("ReplicatedStorage").shared.catalogs.fortuneWheelChances["Fortune Wheel"]
+            
+            while _G.AutoSpinWheel do
+                settingsTab.rspin:InvokeServer("openFortuneWheel", settingsTab.chances)
+                task.wait(1)
             end
         end)
     end
