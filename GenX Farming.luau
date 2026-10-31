@@ -194,19 +194,29 @@ rebirthsStat:GetPropertyChangedSignal("Value"):Connect(function()
     updateRebirthsLabel()
 end)
 
-local function managePets(petName)
-    for _, folder in pairs(player.petsFolder:GetChildren()) do
+function unequipPets()
+    for _, folder in pairs(lp.player.petsFolder:GetChildren()) do
         if folder:IsA("Folder") then
             for _, pet in pairs(folder:GetChildren()) do
-                replicatedStorage.rEvents.equipPetEvent:FireServer("unequipPet", pet)
+                services.replicatedstorage.rEvents.equipPetEvent:FireServer("unequipPet", pet)
             end
         end
     end
     task.wait(0.1)
+end
+
+function equipPetsByName(name)
+    unequipPets()
+    task.wait(0.1) -- Slightly increased to ensure server registers the unequip request
     
-    for _, pet in pairs(player.petsFolder.Unique:GetChildren()) do
-        if pet.Name == petName then
-            replicatedStorage.rEvents.equipPetEvent:FireServer("equipPet", pet)
+    -- Iterate through ALL rarity folders (Basic, Advanced, Rare, Unique, Epic, etc.)
+    for _, folder in pairs(lp.player.petsFolder:GetChildren()) do
+        if folder:IsA("Folder") then
+            for _, pet in pairs(folder:GetChildren()) do
+                if pet.Name == name then
+                    services.replicatedstorage.rEvents.equipPetEvent:FireServer("equipPet", pet)
+                end
+            end
         end
     end
 end
@@ -861,8 +871,12 @@ local statPetDropdown = settingsTab:AddDropdown("Perk Pet Equip", function(text)
 		task.wait(0.1)
 	end
 end)
-statPetDropdown:Add("Swift Samurai")
-statPetDropdown:Add("Tribal Overlord")
+statPetDropdown:Add("Common Boss Pet")
+statPetDropdown:Add("Rare Boss Pet")
+statPetDropdown:Add("Epic Boss Pet")
+statPetDropdown:Add("Legendary Boss Pet")
+statPetDropdown:Add("Mythic Boss Pet")
+statPetDropdown:Add("Rainbow Boss Pet")
 
 local char = player.Character or player.CharacterAdded:wait()
 local hrp = char:WaitForChild("HumanoidRootPart")
