@@ -226,8 +226,6 @@ end
 
 local rebirthTab = window:AddTab("Fast Rebirth")
 
--- Rebirth Tab
-
 rebirthTab.leaderstats = lp.player:WaitForChild("leaderstats")
 rebirthTab.rebirths = rebirthTab.leaderstats:WaitForChild("Rebirths")
 rebirthTab.strength = rebirthTab.leaderstats:WaitForChild("Strength")
@@ -1256,6 +1254,33 @@ local autoEggSwitch = settingsTab:AddSwitch("Eat Eggs", function(state)
         eatEgg()
     end
 end):Set(false)
+
+function eatShake()
+    settingsTab.character = lp.player.Character
+    settingsTab.backpack = lp.player:FindFirstChild("Backpack")
+    settingsTab.tool = (settingsTab.character and settingsTab.character:FindFirstChild("Tropical Shake")) or (settingsTab.backpack and settingsTab.backpack:FindFirstChild("Tropical Shake"))
+    if settingsTab.tool then
+        services.muscleEvent:FireServer("tropicalShake", settingsTab.tool)
+    end
+end
+
+task.spawn(function()
+    while true do
+        if settingsTab.autoShake then
+            eatShake()
+            task.wait(150)
+        else
+            task.wait(1)
+        end
+    end
+end)
+
+local autoShakeSwitch = settingsTab:AddSwitch("Auto Shake", function(state)
+    settingsTab.autoShake = state
+    if state then
+        eatShake()
+    end
+end)
 
 settingsTab.boostItemList = {
     "Tropical Shake",
