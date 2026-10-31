@@ -1282,31 +1282,59 @@ local autoEggSwitch = settingsTab:AddSwitch("Auto Egg", function(state)
     end
 end)
 
-local function useShakes()
-    local tool = player.Character:FindFirstChild("Tropical Shake") or player.Backpack:FindFirstChild("Tropical Shake")
-    if tool then
-        muscleEvent:FireServer("tropicalShake", tool)
-    end
-end
+settingsTab.boostItemList = {
+    "Tropical Shake",
+    "Energy Shake",
+    "Protein Bar",
+    "TOUGH Bar",
+    "Protein Shake",
+    "ULTRA Shake",
+    "Energy Bar",
+}
 
-local running2 = false
+settingsTab.boostActions = {
+    ["Tropical Shake"] = "tropicalShake",
+    ["Energy Shake"] = "energyShake",
+    ["Protein Bar"] = "proteinBar",
+    ["TOUGH Bar"] = "toughBar",
+    ["Protein Shake"] = "proteinShake",
+    ["ULTRA Shake"] = "ultraShake",
+    ["Energy Bar"] = "energyBar",
+}
+
+settingsTab.eatAllBoostsRunning = false
 
 task.spawn(function()
     while true do
-        if running2 then
-            useShakes()
-            task.wait(450)
+        if settingsTab.eatAllBoostsRunning then
+            settingsTab.boostItemIndex = 1
+            while settingsTab.boostItemIndex <= #settingsTab.boostItemList do
+                settingsTab.boostItemName = settingsTab.boostItemList[settingsTab.boostItemIndex]
+                settingsTab.character = lp.player.Character
+                settingsTab.backpack = lp.player:FindFirstChild("Backpack")
+                settingsTab.boostTool = (settingsTab.character and settingsTab.character:FindFirstChild(settingsTab.boostItemName))
+                    or (settingsTab.backpack and settingsTab.backpack:FindFirstChild(settingsTab.boostItemName))
+
+                if settingsTab.boostTool then
+                    settingsTab.boostUseIndex = 1
+                    while settingsTab.boostUseIndex <= 10 do
+                        services.muscleEvent:FireServer(settingsTab.boostActions[settingsTab.boostItemName], settingsTab.boostTool)
+                        settingsTab.boostUseIndex = settingsTab.boostUseIndex + 1
+                    end
+                end
+
+                settingsTab.boostItemIndex = settingsTab.boostItemIndex + 1
+            end
+
+            task.wait(0.1)
         else
             task.wait(1)
         end
     end
 end)
 
-local autoShakeSwitch = settingsTab:AddSwitch("Auto Shake", function(state)
-    running2 = state
-    if state then
-        useShakes()
-    end
+local autoShakeSwitch = settingsTab:AddSwitch("Eat Everything (Except Egg)", function(state)
+    settingsTab.eatAllBoostsRunning = state
 end)
 
 settingsTab.spinFortuneWheel = function()
