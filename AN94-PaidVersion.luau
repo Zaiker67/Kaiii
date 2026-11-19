@@ -2320,30 +2320,48 @@ tabs.other:AddSwitch("Auto Shake", function(state)
 end)
 
 function eatSpookyElixir()
-    tabs.other.character = lp.player.Character
-    tabs.other.backpack = lp.player:FindFirstChild("Backpack")
-    tabs.other.tool = (tabs.other.character and tabs.other.character:FindFirstChild("Spooky XP Elixir I")) or (tabs.other.backpack and tabs.other.backpack:FindFirstChild("Spooky XP Elixir I"))
-    if tabs.other.tool then
-        services.muscleEvent:FireServer("spookyElixirI", tabs.other.tool)
+    local player = lp and lp.player
+    if not player then
+        return false
     end
+
+    tabs.other.character = player.Character
+    tabs.other.backpack = player:FindFirstChild("Backpack")
+    tabs.other.tool = (tabs.other.character and tabs.other.character:FindFirstChild("Spooky XP Elixir I"))
+        or (tabs.other.backpack and tabs.other.backpack:FindFirstChild("Spooky XP Elixir I"))
+
+    if tabs.other.tool and services and services.muscleEvent then
+        pcall(function()
+            services.muscleEvent:FireServer("spookyXPElixirI", tabs.other.tool)
+        end)
+        return true
+    end
+
+    return false
 end
 
 task.spawn(function()
+    local cooldown = 900
+    local lastUsed = 0
+
     while true do
         if tabs.other.autoSpookyElixir then
-            eatSpookyElixir()
-            task.wait(900)
+            local now = os.clock()
+            if (now - lastUsed) >= cooldown then
+                if eatSpookyElixir() then
+                    lastUsed = now
+                end
+            end
+            task.wait(0.5)
         else
-            task.wait(1)
+            lastUsed = 0
+            task.wait(0.5)
         end
     end
 end)
 
 tabs.other:AddSwitch("Auto Spooky Elixir I", function(state)
     tabs.other.autoSpookyElixir = state
-    if state then
-        eatSpookyElixir()
-    end
 end)
 
 tabs.other.spinFortuneWheel = function()
