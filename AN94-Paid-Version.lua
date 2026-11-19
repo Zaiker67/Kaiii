@@ -2220,6 +2220,7 @@ tabs.other.eggsowned.TextSize = 14
 
 tabs.other.autoEgg = false
 tabs.other.autoShake = false
+tabs.other.autoSpookyElixir = false
 tabs.other.autoSpinWheel = false
 tabs.other.antiAFK = true
 tabs.other.antiKnockback = true
@@ -2315,6 +2316,33 @@ tabs.other:AddSwitch("Auto Shake", function(state)
     tabs.other.autoShake = state
     if state then
         eatShake()
+    end
+end)
+
+function eatSpookyElixir()
+    tabs.other.character = lp.player.Character
+    tabs.other.backpack = lp.player:FindFirstChild("Backpack")
+    tabs.other.tool = (tabs.other.character and tabs.other.character:FindFirstChild("Spooky XP Elixir I")) or (tabs.other.backpack and tabs.other.backpack:FindFirstChild("Spooky XP Elixir I"))
+    if tabs.other.tool then
+        services.muscleEvent:FireServer("spookyElixirI", tabs.other.tool)
+    end
+end
+
+task.spawn(function()
+    while true do
+        if tabs.other.autoSpookyElixir then
+            eatShake()
+            task.wait(900)
+        else
+            task.wait(1)
+        end
+    end
+end)
+
+tabs.other:AddSwitch("Auto Spooky Elixir I", function(state)
+    tabs.other.autoSpookyElixir = state
+    if state then
+        eatSpookyElixir()
     end
 end)
 
