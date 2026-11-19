@@ -2331,7 +2331,7 @@ end
 task.spawn(function()
     while true do
         if tabs.other.autoSpookyElixir then
-            eatShake()
+            eatSpookyElixir()
             task.wait(900)
         else
             task.wait(1)
