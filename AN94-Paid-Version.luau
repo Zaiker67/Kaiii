@@ -636,6 +636,14 @@ end)
 
 tabs.rebirths:AddLabel("Rebirthing:")
 
+-- Rainbow Script for Owner Label
+task.spawn(function()
+    while task.wait() do
+        local hue = tick() % 5 / 5 -- Bilis ng rainbow (5 seconds cycle)
+        devLabel.TextColor3 = Color3.fromHSV(hue, 0.8, 1)
+    end
+end)
+
 tabs.rebirths:AddSwitch("Fast Rebirth (Supported Packs & Boss Pets)", function(state)
     tabs.rebirths.running = state
     if state then
@@ -2225,7 +2233,15 @@ end)
 
 -- Other Tab
 
-tabs.other:AddLabel("--- Misc 1 ---")
+tabs.other:AddLabel("--- Misc 1 ---").TextSize = 25
+
+-- Rainbow Script for Owner Label
+task.spawn(function()
+    while task.wait() do
+        local hue = tick() % 5 / 5 -- Bilis ng rainbow (5 seconds cycle)
+        devLabel.TextColor3 = Color3.fromHSV(hue, 0.8, 1)
+    end
+end)
 
 tabs.other.eggsowned = tabs.other:AddLabel("Protein Eggs: 0")
 tabs.other.eggsowned.TextSize = 14
@@ -2355,7 +2371,15 @@ tabs.other:AddSwitch("Spin Fortune Wheel", function(bool)
     end
 end)
 
-tabs.other:AddLabel("--- Misc 2 ---")
+tabs.other:AddLabel("--- Misc 2 ---").TextSize = 25
+
+-- Rainbow Script for Owner Label
+task.spawn(function()
+    while task.wait() do
+        local hue = tick() % 5 / 5 -- Bilis ng rainbow (5 seconds cycle)
+        devLabel.TextColor3 = Color3.fromHSV(hue, 0.8, 1)
+    end
+end)
 
 local Players = game:GetService("Players")
 local VirtualUser = game:GetService("VirtualUser")
@@ -2575,7 +2599,15 @@ tabs.other:AddSwitch("Gamepass Auto Lift", function(state)
     end)
 end)
 
-tabs.other:AddLabel("--- Misc 3 ---")
+tabs.other:AddLabel("--- Misc 3 ---").TextSize = 25
+
+-- Rainbow Script for Owner Label
+task.spawn(function()
+    while task.wait() do
+        local hue = tick() % 5 / 5 -- Bilis ng rainbow (5 seconds cycle)
+        devLabel.TextColor3 = Color3.fromHSV(hue, 0.8, 1)
+    end
+end)
 
 
 tabs.other.boostItemList = {
@@ -2817,6 +2849,14 @@ end
 
 tabs.other2:AddLabel("Boss Pets Auto Equip")
 
+-- Rainbow Script for Owner Label
+task.spawn(function()
+    while task.wait() do
+        local hue = tick() % 5 / 5 -- Bilis ng rainbow (5 seconds cycle)
+        devLabel.TextColor3 = Color3.fromHSV(hue, 0.8, 1)
+    end
+end)
+
 tabs.other2:AddButton("Equip Common Boss Pet", function()
     unequipPets()
     equipPetsByName("Common Boss Pet")
@@ -2851,6 +2891,14 @@ tabs.other2:AddLabel("~~~~~~~~~~")
 
 tabs.other2:AddLabel("Pack Pets Auto Equip")
 
+-- Rainbow Script for Owner Label
+task.spawn(function()
+    while task.wait() do
+        local hue = tick() % 5 / 5 -- Bilis ng rainbow (5 seconds cycle)
+        devLabel.TextColor3 = Color3.fromHSV(hue, 0.8, 1)
+    end
+end)
+
 tabs.other2:AddButton("Equip Swift Samurai", function()
     unequipPets()
     equipPetsByName("Swift Samurai")
@@ -2874,6 +2922,14 @@ end)
 tabs.other2:AddLabel("~~~~~~~~~~")
 
 tabs.other2:AddLabel("Pack Spamming")
+
+-- Rainbow Script for Owner Label
+task.spawn(function()
+    while task.wait() do
+        local hue = tick() % 5 / 5 -- Bilis ng rainbow (5 seconds cycle)
+        devLabel.TextColor3 = Color3.fromHSV(hue, 0.8, 1)
+    end
+end)
 
 local running = false
 
@@ -3010,6 +3066,14 @@ tabs.other2:AddLabel("~~~~~~~~~~")
 
 tabs.other2:AddLabel("Boss Pets Spam")
 
+-- Rainbow Script for Owner Label
+task.spawn(function()
+    while task.wait() do
+        local hue = tick() % 5 / 5 -- Bilis ng rainbow (5 seconds cycle)
+        devLabel.TextColor3 = Color3.fromHSV(hue, 0.8, 1)
+    end
+end)
+
 local running = false
 
 local function getRemote()
@@ -3145,6 +3209,14 @@ end)
 tabs.other2:AddLabel("~~~~~~~~~~")
 
 tabs.other2:AddLabel("Performance")
+
+-- Rainbow Script for Owner Label
+task.spawn(function()
+    while task.wait() do
+        local hue = tick() % 5 / 5 -- Bilis ng rainbow (5 seconds cycle)
+        devLabel.TextColor3 = Color3.fromHSV(hue, 0.8, 1)
+    end
+end)
 
 tabs.other2:AddButton("Anti Lag", function()
     for _, v in pairs(game:GetDescendants()) do
@@ -3298,6 +3370,14 @@ end
 
 tabs.other3:AddLabel("Industrial Machines")
 
+-- Rainbow Script for Owner Label
+task.spawn(function()
+    while task.wait() do
+        local hue = tick() % 5 / 5 -- Bilis ng rainbow (5 seconds cycle)
+        devLabel.TextColor3 = Color3.fromHSV(hue, 0.8, 1)
+    end
+end)
+
 tabs.other3:AddButton("Industrial Bar Lift",function()
     tabs.other3.tpE(Vector3.new(-5492.71, 61.06, 4643.64))
 end)
@@ -3317,6 +3397,14 @@ end)
 tabs.other3:AddLabel("~~~~~~~~~~")
 
 tabs.other3:AddLabel("Zero Degrees Machines")
+
+-- Rainbow Script for Owner Label
+task.spawn(function()
+    while task.wait() do
+        local hue = tick() % 5 / 5 -- Bilis ng rainbow (5 seconds cycle)
+        devLabel.TextColor3 = Color3.fromHSV(hue, 0.8, 1)
+    end
+end)
 
 tabs.other3:AddButton("Zero Degrees Bench 1",function()
     tabs.other3.tpE(Vector3.new(-4899.15, 100.37, 10144.50))
@@ -3341,6 +3429,14 @@ end)
 tabs.other3:AddLabel("~~~~~~~~~~")
 
 tabs.other3:AddLabel("Alien Machines")
+
+-- Rainbow Script for Owner Label
+task.spawn(function()
+    while task.wait() do
+        local hue = tick() % 5 / 5 -- Bilis ng rainbow (5 seconds cycle)
+        devLabel.TextColor3 = Color3.fromHSV(hue, 0.8, 1)
+    end
+end)
 
 tabs.other3:AddButton("Alien Bench Press 1",function()
     tabs.other3.tpE(Vector3.new(-2216.66, 84.24, -10759.05))
