@@ -635,7 +635,6 @@ tabs.rebirths.rebirths:GetPropertyChangedSignal("Value"):Connect(function()
 end)
 
 tabs.rebirths:AddLabel("Rebirthing:")
-
 -- Rainbow Script for Owner Label
 task.spawn(function()
     while task.wait() do
@@ -2234,7 +2233,6 @@ end)
 -- Other Tab
 
 tabs.other:AddLabel("--- Misc 1 ---").TextSize = 25
-
 -- Rainbow Script for Owner Label
 task.spawn(function()
     while task.wait() do
@@ -2372,7 +2370,6 @@ tabs.other:AddSwitch("Spin Fortune Wheel", function(bool)
 end)
 
 tabs.other:AddLabel("--- Misc 2 ---").TextSize = 25
-
 -- Rainbow Script for Owner Label
 task.spawn(function()
     while task.wait() do
@@ -2600,7 +2597,6 @@ tabs.other:AddSwitch("Gamepass Auto Lift", function(state)
 end)
 
 tabs.other:AddLabel("--- Misc 3 ---").TextSize = 25
-
 -- Rainbow Script for Owner Label
 task.spawn(function()
     while task.wait() do
@@ -2848,7 +2844,6 @@ function equipPetsByName(name)
 end
 
 tabs.other2:AddLabel("Boss Pets Auto Equip")
-
 -- Rainbow Script for Owner Label
 task.spawn(function()
     while task.wait() do
@@ -2890,7 +2885,6 @@ end)
 tabs.other2:AddLabel("~~~~~~~~~~")
 
 tabs.other2:AddLabel("Pack Pets Auto Equip")
-
 -- Rainbow Script for Owner Label
 task.spawn(function()
     while task.wait() do
@@ -2922,7 +2916,6 @@ end)
 tabs.other2:AddLabel("~~~~~~~~~~")
 
 tabs.other2:AddLabel("Pack Spamming")
-
 -- Rainbow Script for Owner Label
 task.spawn(function()
     while task.wait() do
@@ -3065,7 +3058,6 @@ end)
 tabs.other2:AddLabel("~~~~~~~~~~")
 
 tabs.other2:AddLabel("Boss Pets Spam")
-
 -- Rainbow Script for Owner Label
 task.spawn(function()
     while task.wait() do
@@ -3209,7 +3201,6 @@ end)
 tabs.other2:AddLabel("~~~~~~~~~~")
 
 tabs.other2:AddLabel("Performance")
-
 -- Rainbow Script for Owner Label
 task.spawn(function()
     while task.wait() do
@@ -3369,7 +3360,6 @@ tabs.other3.tpE = function(position)
 end
 
 tabs.other3:AddLabel("Industrial Machines")
-
 -- Rainbow Script for Owner Label
 task.spawn(function()
     while task.wait() do
@@ -3397,7 +3387,6 @@ end)
 tabs.other3:AddLabel("~~~~~~~~~~")
 
 tabs.other3:AddLabel("Zero Degrees Machines")
-
 -- Rainbow Script for Owner Label
 task.spawn(function()
     while task.wait() do
@@ -3429,7 +3418,6 @@ end)
 tabs.other3:AddLabel("~~~~~~~~~~")
 
 tabs.other3:AddLabel("Alien Machines")
-
 -- Rainbow Script for Owner Label
 task.spawn(function()
     while task.wait() do
