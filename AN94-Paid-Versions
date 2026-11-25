@@ -634,7 +634,9 @@ tabs.rebirths.rebirths:GetPropertyChangedSignal("Value"):Connect(function()
     tabs.rebirths.updateStats()
 end)
 
-tabs.rebirths:AddLabel("Rebirthing:")
+local devLabel = tabs.rebirths:AddLabel("Rebirthing:")
+devLabel.TextSize = 22
+
 -- Rainbow Script for Owner Label
 task.spawn(function()
     while task.wait() do
@@ -2232,7 +2234,9 @@ end)
 
 -- Other Tab
 
-tabs.other:AddLabel("--- Misc 1 ---").TextSize = 25
+local devLabel = tabs.other:AddLabel("Misc 1:")
+devLabel.TextSize = 22
+
 -- Rainbow Script for Owner Label
 task.spawn(function()
     while task.wait() do
@@ -2369,7 +2373,9 @@ tabs.other:AddSwitch("Spin Fortune Wheel", function(bool)
     end
 end)
 
-tabs.other:AddLabel("--- Misc 2 ---").TextSize = 25
+local devLabel = tabs.other:AddLabel("Misc 2:")
+devLabel.TextSize = 22
+
 -- Rainbow Script for Owner Label
 task.spawn(function()
     while task.wait() do
@@ -2596,7 +2602,9 @@ tabs.other:AddSwitch("Gamepass Auto Lift", function(state)
     end)
 end)
 
-tabs.other:AddLabel("--- Misc 3 ---").TextSize = 25
+local devLabel = tabs.other:AddLabel("Misc3:")
+devLabel.TextSize = 22
+
 -- Rainbow Script for Owner Label
 task.spawn(function()
     while task.wait() do
@@ -2843,7 +2851,9 @@ function equipPetsByName(name)
     end
 end
 
-tabs.other2:AddLabel("Boss Pets Auto Equip")
+local devLabel = tabs.other2:AddLabel("Boss Pets Auto Equip")
+devLabel.TextSize = 22
+
 -- Rainbow Script for Owner Label
 task.spawn(function()
     while task.wait() do
@@ -2884,7 +2894,9 @@ end)
 
 tabs.other2:AddLabel("~~~~~~~~~~")
 
-tabs.other2:AddLabel("Pack Pets Auto Equip")
+local devLabel = tabs.other2:AddLabel("Pack Pets Auto Equip")
+devLabel.TextSize = 22
+
 -- Rainbow Script for Owner Label
 task.spawn(function()
     while task.wait() do
@@ -2915,7 +2927,9 @@ end)
 
 tabs.other2:AddLabel("~~~~~~~~~~")
 
-tabs.other2:AddLabel("Pack Spamming")
+local devLabel = tabs.other2:AddLabel("Pack Spamming")
+devLabel.TextSize = 22
+
 -- Rainbow Script for Owner Label
 task.spawn(function()
     while task.wait() do
@@ -3057,7 +3071,9 @@ end)
 
 tabs.other2:AddLabel("~~~~~~~~~~")
 
-tabs.other2:AddLabel("Boss Pets Spam")
+local devLabel = tabs.other2:AddLabel("Boss Spamming")
+devLabel.TextSize = 22
+
 -- Rainbow Script for Owner Label
 task.spawn(function()
     while task.wait() do
@@ -3200,7 +3216,9 @@ end)
 
 tabs.other2:AddLabel("~~~~~~~~~~")
 
-tabs.other2:AddLabel("Performance")
+local devLabel = tabs.other2:AddLabel("Performamce")
+devLabel.TextSize = 22
+
 -- Rainbow Script for Owner Label
 task.spawn(function()
     while task.wait() do
@@ -3359,7 +3377,9 @@ tabs.other3.tpE = function(position)
     services.virtualinputmanager:SendKeyEvent(false, Enum.KeyCode.E, false, game)
 end
 
-tabs.other3:AddLabel("Industrial Machines")
+local devLabel = tabs.other3:AddLabel("Industtial Machines")
+devLabel.TextSize = 22
+
 -- Rainbow Script for Owner Label
 task.spawn(function()
     while task.wait() do
@@ -3386,7 +3406,9 @@ end)
 
 tabs.other3:AddLabel("~~~~~~~~~~")
 
-tabs.other3:AddLabel("Zero Degrees Machines")
+local devLabel = tabs.other3:AddLabel("Zero Degrees Machines")
+devLabel.TextSize = 22
+
 -- Rainbow Script for Owner Label
 task.spawn(function()
     while task.wait() do
@@ -3417,7 +3439,9 @@ end)
 
 tabs.other3:AddLabel("~~~~~~~~~~")
 
-tabs.other3:AddLabel("Alien Machines")
+local devLabel = tabs.other3:AddLabel("Alien Machines")
+devLabel.TextSize = 22
+
 -- Rainbow Script for Owner Label
 task.spawn(function()
     while task.wait() do
