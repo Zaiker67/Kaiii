@@ -635,7 +635,7 @@ tabs.rebirths.rebirths:GetPropertyChangedSignal("Value"):Connect(function()
 end)
 
 local devLabel = tabs.rebirths:AddLabel("Rebirthing:")
-devLabel.TextSize = 22
+devLabel.TextSize = 20
 
 -- Rainbow Script for Owner Label
 task.spawn(function()
@@ -1284,7 +1284,6 @@ task.spawn(function()
         task.wait(1)
     end
 end)
-tabs.strength2:AddLabel("Fast FarmV2 for Packs")
 
 tabs.boss.runtime = {}
 
@@ -2225,8 +2224,16 @@ end)
 
 tabs.boss:AddLabel("~~~~~~~~~~")
 
-tabs.boss:AddLabel("Boss Killing V2")
+local devLabel = tabs.boss:AddLabel("Auto Kill Boss V2")
+devLabel.TextSize = 20
 
+-- Rainbow Script for Owner Label
+task.spawn(function()
+    while task.wait() do
+        local hue = tick() % 5 / 5 -- Bilis ng rainbow (5 seconds cycle)
+        devLabel.TextColor3 = Color3.fromHSV(hue, 0.8, 1)
+    end
+end)
 tabs.boss:AddButton("Auto Boss V2", function()
     loadstring(game:HttpGet("https://codeberg.org/galinganmoicrackscriptkoHAHA/BossTest/raw/branch/main/autobossv2.lua"))()
 end)
@@ -2234,8 +2241,8 @@ end)
 
 -- Other Tab
 
-local devLabel = tabs.other:AddLabel("Misc 1:")
-devLabel.TextSize = 22
+local devLabel = tabs.other:AddLabel("——— Misc 1 ———")
+devLabel.TextSize = 20
 
 -- Rainbow Script for Owner Label
 task.spawn(function()
@@ -2373,8 +2380,8 @@ tabs.other:AddSwitch("Spin Fortune Wheel", function(bool)
     end
 end)
 
-local devLabel = tabs.other:AddLabel("Misc 2:")
-devLabel.TextSize = 22
+local devLabel = tabs.other:AddLabel("——— Misc 2 ———")
+devLabel.TextSize = 20
 
 -- Rainbow Script for Owner Label
 task.spawn(function()
@@ -2602,8 +2609,8 @@ tabs.other:AddSwitch("Gamepass Auto Lift", function(state)
     end)
 end)
 
-local devLabel = tabs.other:AddLabel("Misc3:")
-devLabel.TextSize = 22
+local devLabel = tabs.other:AddLabel("——— Misc 3 ———")
+devLabel.TextSize = 20
 
 -- Rainbow Script for Owner Label
 task.spawn(function()
@@ -2852,7 +2859,7 @@ function equipPetsByName(name)
 end
 
 local devLabel = tabs.other2:AddLabel("Boss Pets Auto Equip")
-devLabel.TextSize = 22
+devLabel.TextSize = 20
 
 -- Rainbow Script for Owner Label
 task.spawn(function()
@@ -2895,7 +2902,7 @@ end)
 tabs.other2:AddLabel("~~~~~~~~~~")
 
 local devLabel = tabs.other2:AddLabel("Pack Pets Auto Equip")
-devLabel.TextSize = 22
+devLabel.TextSize = 20
 
 -- Rainbow Script for Owner Label
 task.spawn(function()
@@ -2928,7 +2935,7 @@ end)
 tabs.other2:AddLabel("~~~~~~~~~~")
 
 local devLabel = tabs.other2:AddLabel("Pack Spamming")
-devLabel.TextSize = 22
+devLabel.TextSize = 20
 
 -- Rainbow Script for Owner Label
 task.spawn(function()
@@ -3072,7 +3079,7 @@ end)
 tabs.other2:AddLabel("~~~~~~~~~~")
 
 local devLabel = tabs.other2:AddLabel("Boss Spamming")
-devLabel.TextSize = 22
+devLabel.TextSize = 20
 
 -- Rainbow Script for Owner Label
 task.spawn(function()
@@ -3217,7 +3224,7 @@ end)
 tabs.other2:AddLabel("~~~~~~~~~~")
 
 local devLabel = tabs.other2:AddLabel("Performamce")
-devLabel.TextSize = 22
+devLabel.TextSize = 20
 
 -- Rainbow Script for Owner Label
 task.spawn(function()
@@ -3378,7 +3385,7 @@ tabs.other3.tpE = function(position)
 end
 
 local devLabel = tabs.other3:AddLabel("Industrial Machines")
-devLabel.TextSize = 22
+devLabel.TextSize = 20
 
 -- Rainbow Script for Owner Label
 task.spawn(function()
@@ -3407,7 +3414,7 @@ end)
 tabs.other3:AddLabel("~~~~~~~~~~")
 
 local devLabel = tabs.other3:AddLabel("Zero Degrees Machines")
-devLabel.TextSize = 22
+devLabel.TextSize = 20
 
 -- Rainbow Script for Owner Label
 task.spawn(function()
@@ -3440,7 +3447,7 @@ end)
 tabs.other3:AddLabel("~~~~~~~~~~")
 
 local devLabel = tabs.other3:AddLabel("Alien Machines")
-devLabel.TextSize = 22
+devLabel.TextSize = 20
 
 -- Rainbow Script for Owner Label
 task.spawn(function()
@@ -3551,8 +3558,8 @@ local tiktokBtn = tabs.info:AddButton("📋 COPY TIKTOK LINK", function()
 end)
 
 -- [[ STATUS SECTION ]]
-tabs.info:AddLabel("💠 Script Status: [ ONLINE ]")
-tabs.info:AddLabel("🚀 PAID VERSION: 1.4")
+tabs.info:AddLabel("💠 Script Status: [ ACTIVE ]")
+tabs.info:AddLabel("🚀 PAID VERSION: 1.5")
 createSeparator()
 
 -- [[ FOOTER SECTION - THE "ON TOP" ANIMATION ]]
