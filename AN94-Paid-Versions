@@ -140,7 +140,7 @@ services.touchParts = function(part, hand, state)
     return pcall(firetouchinterest, part, hand, state)
 end
 
-local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/SadOz8/Library/refs/heads/main/Library.txt", true))()
+local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/Script-ZenthonLee/Akimbs/refs/heads/main/M1887-Lib", true))()
 local silence = library:AddWindow("M1887 | Paid Version - Pack & Boss Farm", {
     title_bar = {Color3.fromRGB(0, 0, 0), Color3.fromRGB(20, 20, 20), Color3.fromRGB(128, 128, 128)},
     title_bar_transparency = 0.2,
