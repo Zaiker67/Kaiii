@@ -2262,6 +2262,7 @@ tabs.other.antiAFK = true
 tabs.other.antiKnockback = true
 tabs.other.lockPosition = false
 tabs.other.autoLift = false
+tabs.other.blockRebirths = false
 tabs.other.disableTrading = false
 tabs.other.autoTimeChanger = false
 tabs.other.eggUsedThisCycle = false
@@ -2608,6 +2609,27 @@ tabs.other:AddSwitch("Gamepass Auto Lift", function(state)
             autoLiftRemote:FireServer(autoLiftEnabled)
         end
     end)
+end)
+
+local blockRebirths = false
+local namecallHook
+
+namecallHook = hookmetamethod(game, "__namecall", newcclosure(function(self, ...)
+	if blockRebirths and not checkcaller() and typeof(self) == "Instance" and self.Name == "rebirthRemote" then
+		local method = getnamecallmethod()
+		if method == "FireServer" or method == "InvokeServer" then
+			local args = { ... }
+			if args[1] == "rebirthRequest" then
+				return nil
+			end
+		end
+	end
+
+	return namecallHook(self, ...)
+end))
+
+tabs.other:AddSwitch("Block Rebirths", function(state)
+	blockRebirths = state
 end)
 
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
