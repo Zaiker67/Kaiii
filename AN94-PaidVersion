@@ -2262,6 +2262,7 @@ tabs.other.antiAFK = true
 tabs.other.antiKnockback = true
 tabs.other.lockPosition = false
 tabs.other.autoLift = false
+tabs.other.blockTrading = false
 tabs.other.autoTimeChanger = false
 tabs.other.eggUsedThisCycle = false
 
@@ -2607,6 +2608,10 @@ tabs.other:AddSwitch("Gamepass Auto Lift", function(state)
             autoLiftRemote:FireServer(autoLiftEnabled)
         end
     end)
+end)
+
+tabs.other:AddSwitch("Block Trades", function()
+  replicatedStorage.rEvents.tradingEvent:FireServer("disableTrading")
 end)
 
 local devLabel = tabs.other:AddLabel("——— Misc 3 ———")
